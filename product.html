@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; worker-src blob:; img-src data: file:; font-src data:">
+    <title></title>
+    <link rel="stylesheet" href="node_modules/metro4/build/metro.css">
+    <link rel="stylesheet" href="node_modules/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="product.css" />
+  </head>
+  <body>
+    <!-- Product Header -->
+    <div class=product-header>
+    </div>
+
+    <div class="product-detail-img">
+      <!-- Product Detail -->
+      <div class="product-detail">
+        <ul id="product-detail-list">
+          <li class="product-code-select-li"><label for="product-code-select"><strong>Product Code</strong>:&nbsp;</label>
+            <select data-role="select" class="product-code-select" id="product-code-select" name="product-code-select">
+            </select>
+          </li>
+        </ul>
+        <div class="add-to-quote-part">
+          <form id="add-to-quote-form">
+            <!-- <span>$100</span> -->
+            <input type="number" id="add-to-quote-quantity" step="1" min="1" value="1" onkeypress="return event.charCode >= 48" required></input>
+            <button type="submit">ADD TO QUOTE</button>
+          </form>
+        </div>
+      </div>
+      <!-- Product Img -->
+      <div class="swiper product-img-swiper">
+        <div class="swiper-wrapper product-img-swiper-wrapper">
+        </div>
+        <div class="swiper-pagination product-img-swiper-pagination"></div>
+      </div>
+    </div>
+
+    <!-- Product Menuscript -->
+    <div class="product-menuscript">
+      <img src="image/img/sample_menuscript.jpg"/>
+    </div>
+
+    <script type="text/javascript" src="node_modules/metro4/build/metro.js"></script>
+    <script type="text/javascript" src="node_modules/swiper/swiper-bundle.js"></script>
+    <script src="product.js"></script>
+  </body>
+</html>

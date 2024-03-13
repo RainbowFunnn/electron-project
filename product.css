@@ -1,0 +1,99 @@
+.product-header {
+  margin-left: 25px;
+  margin-top: 20px;
+}
+
+.product-header h1 {
+  font-weight: 400;
+}
+
+.product-detail {
+  display: inline-block;
+  vertical-align: top;
+  max-width: 400px;
+}
+
+#product-detail-list {
+  line-height: 1.7;
+  padding-left: 30px;
+  padding-bottom: 10px;
+  border-bottom: solid;
+  border-color: lightgray;
+}
+
+.product-code-select {
+  width: 200px;
+}
+
+.product-code-select-li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.product-img-swiper {
+  display: inline-block;
+  max-width: 390px;
+  max-height: 500px;
+  margin-left: 75px;
+}
+
+
+.product-img-swiper-pagination {
+  position: static;
+  margin-top: 60px;
+}
+
+.product-img-swiper-wrapper{
+  margin-top: 50px;
+  margin-bottom: 50px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.swiper-slide {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.swiper-slide img {
+  max-width: 300px;
+  max-height: 300px;
+  display: block;
+  object-fit: cover;
+}
+
+.add-to-quote-part {
+  margin-top: 20px;
+}
+
+
+.add-to-quote-part button {
+  cursor: pointer;
+  padding: 5px 15px 5px;
+  background-color: #60a9176b;
+  border: none;
+  /* float:right; */
+  margin-right:25px;
+}
+
+.add-to-quote-part button:hover{
+  background-color: #60a9178f;
+}
+
+#add-to-quote-quantity {
+  height: 34px;
+  width: 3em;
+  padding-left: 8px;
+  margin-left: 30px;
+}
+
+.product-menuscript img {
+  float:right;
+  max-width: 400px;
+  max-height: 500px;
+  margin-right: 50px;
+  margin-bottom: 20px;
+}

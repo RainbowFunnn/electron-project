@@ -1,0 +1,191 @@
+/* css login page */
+.login{
+  display: None;
+}
+
+.login .title {
+  font-size: 40px;
+  font-weight: 300;
+  margin-top: 60px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+form.login {
+  margin: 100px auto;
+  width: 300px;
+}
+
+form.login input {
+  width: 100%;
+  display: block;
+  margin: 20px 0;
+}
+
+form.login button[type="submit"] {
+  display: block;
+  width: 50%;
+  margin: 30px auto;
+}
+
+
+/* css main part */
+.main-part {
+  display: block;
+}
+
+.main-part-header{
+  padding-top: 40px;
+}
+
+#main-part-header-username{
+  margin-left: 40px;
+}
+
+.quote-button {
+  display: flex;
+  float: right;
+  margin-right: 40px;
+  font-size: 30px;
+  align-items: center;
+  cursor: pointer;
+  color: #2e4e6a;
+}
+
+.quote-button:hover{
+  color: green;
+}
+
+
+.product-search-part {
+  margin: 35px 0px 0px 0px;
+  padding-left: 220px;
+  padding-right: 120px;
+}
+
+.product-search-filter{
+  font-size: 20px;
+}
+
+/* .product-search-wrapper .input input {
+
+} */
+
+.products {
+  margin-top: 50px;
+  /* padding-left: 150px; */
+  padding-right: 150px;
+}
+
+#filter-sidebar {
+  float: left;
+}
+
+.filter-cards {
+  margin-left: 15px;
+  border-style: None;
+  padding: 0 20px 15px 20px;
+}
+
+.card-header{
+  font-weight: bold;
+}
+
+.checkbox {
+  height: 30px;
+}
+
+.checkbox .check{
+  height: 15px;
+  width: 15px;
+}
+
+.product-list-area {
+  margin-left: 250px;
+}
+
+.product_item{
+  border: solid;
+  padding-left: 15px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.product_item:hover {
+  background-color: lightgray;
+}
+
+.filter-part {
+  display: none;
+}
+
+
+.part-close-button {
+  font-size: 27px;
+  margin-top: 30px;
+  margin-right: 50px;
+  float: right;
+  cursor: pointer;
+  color: gray;
+}
+
+
+.filter-done-button {
+  color: green;
+  position: fixed;
+  bottom: 50px;
+  font-size: 35px;
+  border: solid;
+  border-radius:50%;
+  -moz-border-radius:50%;
+  -webkit-border-radius:50%;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.filter-clear-all-button{
+  float: right;
+  color: green;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.price-filter {
+  margin-left: 15%;
+  margin-right: 15%;
+  padding-top: 80px;
+  border-bottom: solid lightgray;
+  padding-bottom: 30px;
+}
+
+.price-filter p {
+  font-weight: bold;
+}
+
+.price-filter input[type="text"][disabled] {
+   background-color: white;
+   margin: 5px 0px 8px 0px;
+}
+
+#price-filter-slider .ui-slider-range {
+  background: #60a91796;
+}
+
+#price-filter-slider span {
+  border-radius:50%;
+  -moz-border-radius:50%;
+  -webkit-border-radius:50%;
+}
+
+.quote-table {
+  margin-top: 50px;
+  padding: 0px 50px 0px;
+}
+
+.quote-part {
+  display: None;
+}
