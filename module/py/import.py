@@ -5,10 +5,26 @@ from openpyxl import load_workbook
 from openpyxl_image_loader import SheetImageLoader
 import io
 import pandas as pd
+import numpy as np
 
 filepath = "sample.xlsx"
 dbpath = "database.db"
+con = sqlite3.connect(dbpath)
+cur = con.cursor()
 
+# import product data
+df = pd.read_excel(filepath, engine="openpyxl")
+df_clean = df.dropna(axis=1, how='all').dropna(how='all')
+df_clean = df_clean.rename(columns={"Book Price (Ex. GST)": "Price", "Qty/Box": "Qty", "Color Finish": "Color", "WELS LIC.": "WELS", "REG. Number": "REG", "STAR Rating": "Rating", "Water Cconsump.": "WaterCon"})
+df_clean = df_clean.round({"Price": 2})
+df_clean["WELS"].replace('NOT REQUIRE', np.nan, inplace=True)
+# add column called img
+df_clean["img"] = np.nan
+# import data to sqlite
+df_clean.to_sql("Products", con, index=False)
+con.commit()
+
+# import product image
 wb = openpyxl.load_workbook(filepath)
 ws = wb[wb.sheetnames[0]]
 image_loader = SheetImageLoader(ws)
@@ -31,22 +47,12 @@ for cell in img_locs_ft:
 # Extract Product Labels
 img_labels = []
 for label, img_blob in zip(img_locs_ft, imgs_blob):
-    img_labels.append((ws[label.replace("A", "B")].value.split("-")[0].split(".")[0], img_blob))
+    img_labels.append((img_blob, ws[label.replace("A", "B")].value))
 
-# import image table to sqlite3 database
-con = sqlite3.connect(dbpath)
-cur = con.cursor()
-cur.executemany("INSERT INTO Image VALUES (?, ?)", img_labels)
-con.commit()
-
-# import product data
-df = pd.read_excel(filepath, engine="openpyxl")
-df_clean = df.dropna(axis=1, how='all').dropna(how='all')
-df_clean = df_clean.rename(columns={"Book Price (Ex. GST)": "Price", "Qty/Box": "Qty", "Color Finish": "Color", "WELS LIC.": "WELS", "REG. Number": "REG", "STAR Rating": "Rating", "Water Cconsump.": "WaterCon"})
-df_clean = df_clean.round({"Price": 2})
-df_clean.insert(0, "product_id", [code.split("-")[0].split(".")[0] for code in df_clean["Code"]])
-df_clean.to_sql("Products", con, index=False)
+# import product image to sqlite
+cur.executemany("UPDATE Products SET img = ? WHERE Code = ?", img_labels)
 con.commit()
 con.close()
+
 print("finish")
-sys.stdout.flush()
+# sys.stdout.flush()
