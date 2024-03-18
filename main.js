@@ -43,9 +43,13 @@ function db_read_img(win, name, query) {
       throw err;
     };
     rows.forEach(row => {
-      let imageBuffer = Buffer.from(row.img, 'binary');
-      let base64Image = imageBuffer.toString('base64');
-      win.webContents.send(name, base64Image);
+      if (row.img == null) {
+        win.webContents.send(name, null);
+      } else{
+        let imageBuffer = Buffer.from(row.img, 'binary');
+        let base64Image = imageBuffer.toString('base64');
+        win.webContents.send(name, base64Image);
+      }
     });
   });
 
@@ -167,10 +171,8 @@ const createWindow = () => {
   // When the main window is ready
   win.webContents.on('did-finish-load', () => {
     // Get and Send all Products ID to front page
-    db_read(win, "product_item_list", `SELECT DISTINCT product_id, GROUP_CONCAT(Price, ',') AS prices, Category AS category, GROUP_CONCAT(Color, ',') AS colors
-                                       FROM Products
-                                       GROUP BY product_id`);
-    db_read(win, "create_price_filter", `SELECT max(Price) AS max_price FROM Products`);
+    db_read(win, "product_item_list", `SELECT Code, Price, Category, Color
+                                       FROM Products`);
   });
 
 }
@@ -179,6 +181,7 @@ const createWindow = () => {
 app.whenReady().then(() => {
   ipcMain.handle("dialog:getNewProductDetails", getNewProductDetails);
   ipcMain.on('addProduct', (event, product_code, product_quantity) => {
+    // test of print here
     childWindows[0].webContents.printToPDF({landscape: true}).then(data => {
         fs.writeFile("test.pdf", data, function (err) {
             if (err) {
@@ -247,9 +250,9 @@ ipcMain.on('create-item-window', (event, item_id) => {
   itemWindow.webContents.on('did-finish-load', () => {
     // init the page content
       // Get img
-    db_read_img(itemWindow, "productImg", "SELECT img FROM Image WHERE product_id = '"+ item_id +"';")
+    db_read_img(itemWindow, "productImg", "SELECT img FROM Products WHERE Code = '"+ item_id +"';")
       //get all details
-    db_read(itemWindow, "productDetail", "SELECT * FROM Products WHERE product_id = '" + item_id + "' ORDER BY Code;")
+    db_read(itemWindow, "productDetail", "SELECT * FROM Products WHERE Code = '" + item_id + "'")
   });
 
 });

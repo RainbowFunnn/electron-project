@@ -131,56 +131,6 @@ form.login button[type="submit"] {
   color: gray;
 }
 
-
-.filter-done-button {
-  color: green;
-  position: fixed;
-  bottom: 50px;
-  font-size: 35px;
-  border: solid;
-  border-radius:50%;
-  -moz-border-radius:50%;
-  -webkit-border-radius:50%;
-  left: 50%;
-  transform: translateX(-50%);
-  cursor: pointer;
-}
-
-.filter-clear-all-button{
-  float: right;
-  color: green;
-  background-color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.price-filter {
-  margin-left: 15%;
-  margin-right: 15%;
-  padding-top: 80px;
-  border-bottom: solid lightgray;
-  padding-bottom: 30px;
-}
-
-.price-filter p {
-  font-weight: bold;
-}
-
-.price-filter input[type="text"][disabled] {
-   background-color: white;
-   margin: 5px 0px 8px 0px;
-}
-
-#price-filter-slider .ui-slider-range {
-  background: #60a91796;
-}
-
-#price-filter-slider span {
-  border-radius:50%;
-  -moz-border-radius:50%;
-  -webkit-border-radius:50%;
-}
-
 .quote-table {
   margin-top: 50px;
   padding: 0px 50px 0px;

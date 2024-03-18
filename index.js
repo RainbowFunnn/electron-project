@@ -1,11 +1,6 @@
 const main_part = document.getElementsByClassName("main-part")[0];
-// const filter_part = document.getElementsByClassName("filter-part")[0];
 const quote_part = document.getElementsByClassName("quote-part")[0];
 const login_part = document.getElementsByClassName("login-part")[0];
-
-// const filter_close_btn = document.getElementsByClassName("filter-close-button")[0];
-// const filter_done_btn = document.getElementsByClassName("filter-done-button")[0];
-// const filter_clear_btn = document.getElementsByClassName("filter-clear-all-button")[0];
 
 const quote_btn = document.getElementsByClassName("quote-button")[0];
 const quote_close_btn = document.getElementsByClassName("quote-close-button")[0];
@@ -50,23 +45,11 @@ function delete_quote_item(product){
   m4q.noConflict();
 }
 
-// window.electronAPI.create_price_filter((rows) => {
-//   max_price = rows[0].max_price;
-//   min_price_filter = 0;
-//   max_price_filter = max_price+10;
-//   price_filter_init(max_price, 0, max_price+10);
-//   //clearALL function
-//   filter_clear_btn.onclick = function(){
-//     price_filter_init(max_price, 0, max_price+10);
-//   }
-//
-// });
-
 
 window.electronAPI.product_item_list((rows) => {
   m4q.global();
   rows.forEach((row) => {
-      $( "<li><div class='product_item' id=" + row.product_id + " prices=" + row.prices + ">" + row.product_id + "</div></li>", $( "#products-list" ) );
+      $( "<li><div class='product_item' id=" + row.Code + " price=" + row.price + ">" + row.Code + "</div></li>", $( "#products-list" ) );
   });
 
   let items = document.querySelectorAll('.product_item');
@@ -81,21 +64,6 @@ window.electronAPI.product_item_list((rows) => {
   });
   $( "#products-list" ).data('list')._createItemsFromHTML();
   $( "#products-list" ).data('list').draw();
-
-  // add filter icon in search part
-  // const product_search_wrapper_buttons = document.getElementsByClassName("button-group")[0];
-  // const filter_icon_button = document.createElement("button");
-  // filter_icon_button.classname="button";
-  // filter_icon_button.type = "button";
-  // filter_icon_button.onclick = function() {
-  //   main_part.style.display = "none";
-  //   filter_part.style.display = "block";
-  // };
-  //
-  // const filter_icon = document.createElement("span");
-  // filter_icon.className = "mif-filter product-search-filter";
-  // filter_icon_button.appendChild(filter_icon);
-  // product_search_wrapper_buttons.appendChild(filter_icon_button);
 
   m4q.noConflict(); // $ - now is a jquery constructor
 });
@@ -123,34 +91,6 @@ window.electronAPI.addQuote((rows, product_quantity) => {
   m4q.noConflict();
 });
 
-
-//filter cancel & done
-// filter_close_btn.onclick = function(){
-//   main_part.style.display = "block";
-//   filter_part.style.display = "none";
-//   price_filter_init(max_price, min_price_filter, max_price_filter)
-// };
-//
-// filter_done_btn.onclick = function(){
-//   // price filter
-//   min_price_filter = $( "#price-filter-slider" ).slider( "values", 0 );
-//   max_price_filter = $( "#price-filter-slider" ).slider( "values", 1 );
-//   m4q.global();
-//   $( "#products-list" ).data('list').removeFilters(false);
-//   $( "#products-list" ).data('list').addFilter((item) => {
-//     let product_prices = item.getElementsByClassName("product_item")[0].getAttribute('prices').split(",");
-//     for (let i = 0; i < product_prices.length; i++) {
-//       if (product_prices[i] >= min_price_filter && product_prices[i] <= max_price_filter) {
-//         return true;
-//       }
-//     }
-//     return false;
-//   }, true);
-//   m4q.noConflict();
-//
-//   main_part.style.display = "block";
-//   filter_part.style.display = "none";
-// }
 
 //Quote Part
 ///open the quote page
