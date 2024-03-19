@@ -189,19 +189,20 @@ app.whenReady().then(() => {
   // addProduct function
   ipcMain.on('addProduct', (event, product_code, product_quantity) => {
     // test of print here
-    childWindows[0].webContents.printToPDF({landscape: true}).then(data => {
-        fs.writeFile("test.pdf", data, function (err) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log('PDF Generated Successfully');
-            }
-        });
-    }).catch(error => {
-        console.log(error)
-    });
+    // childWindows[0].webContents.printToPDF({landscape: true}).then(data => {
+    //     fs.writeFile("test.pdf", data, function (err) {
+    //         if (err) {
+    //             console.log(err);
+    //         } else {
+    //             console.log('PDF Generated Successfully');
+    //         }
+    //     });
+    // }).catch(error => {
+    //     console.log(error)
+    // });
+
     // extract product information from db
-    let query = `SELECT product_id, Code, Price FROM Products WHERE Code = "` + product_code + `"`;
+    let query = `SELECT Code, Price FROM Products WHERE Code = "` + product_code + `"`;
     let db = new sqlite3.Database('./module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
       if (err) {
         console.error(err.message);

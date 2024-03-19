@@ -16,7 +16,7 @@ window.electronAPI.getProductImg((rows) => {
 
 window.electronAPI.getProductDetails((rows) => {
   //set page hearder
-  $( "<h1>" + rows[0].Code + "</h1>", $( ".product-header" ) );
+  $( "<h1 id='product-code'>" + rows[0].Code + "</h1>", $( ".product-header" ) );
 
     // Desc
   $( "<li><strong>Description</strong>: <span id='product-desc'>" + rows[0].Description.toLowerCase() + "</span></li>", $( "#product-detail-list" ) );
@@ -38,7 +38,7 @@ window.electronAPI.getProductDetails((rows) => {
 const add_quote_form = document.querySelector("#add-to-quote-form");
 add_quote_form.addEventListener("submit", function(event){
         event.preventDefault();
-        let product_code = $( "#product-code-select" ).val();
+        let product_code = $( "#product-code" ).html();
         let product_quantity = $( "#add-to-quote-quantity" ).val();
         window.electronAPI.addProduct(product_code, product_quantity);
 });
