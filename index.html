@@ -41,20 +41,14 @@
             <div class="card-header">
               Category
             </div>
-            <div class="card-content">
-              <div><input type="checkbox" data-role="checkbox" data-style="2" value="TAPWARE" data-caption="TAPWARE" checked></div>
-              <div><input type="checkbox" data-role="checkbox" data-style="2" value="ACCESSORY" data-caption="ACCESSORY" checked></div>
-              <div><input type="checkbox" data-role="checkbox" data-style="2" value="SHOWER" data-caption="SHOWER" checked></div>
+            <div class="card-content" id="product-category-filter-list">
             </div>
           </div>
           <div class="cards border filter-cards product-color-filter">
             <div class="card-header">
               Finish
             </div>
-            <div class="card-content">
-              <div><input type="checkbox" data-role="checkbox" data-style="2" value="CHROME" data-caption="CHROME" checked></div>
-              <div><input type="checkbox" data-role="checkbox" data-style="2" value="MATT BLACK" data-caption="MATT BLACK" checked></div>
-              <div><input type="checkbox" data-role="checkbox" data-style="2" value="BRUSH GOLD" data-caption="BRUSH GOLD" checked></div>
+            <div class="card-content" id="product-color-filter-list">
             </div>
           </div>
         </div>
@@ -62,12 +56,13 @@
         <div class="product-list-area">
           <ul data-role="list"
               data-filter-class="product_item"
-              data-cls-list="unstyled-list"
               data-show-search="true"
               data-show-pagination="true"
-              data-items="5"
+              data-items="15"
               data-show-list-info="true"
               data-search-wrapper=".product-search-wrapper"
+              data-cls-list-item="cell-sm-4 cell-md-4"
+              data-cls-list="unstyled-list row flex-justify-center mt-4"
               id="products-list"
           >
           </ul>

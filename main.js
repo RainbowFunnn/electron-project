@@ -62,39 +62,39 @@ function db_read_img(win, name, query) {
   });
 }
 
-async function getNewProductDetails(event, product_id, product_code) {
-  // open database
-  let db = new sqlite3.Database('./module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-      console.error(err.message);
-    }
-    //console.log('Connected to the chinook database.');
-  });
-  let query = `SELECT * FROM Products WHERE product_id = ? AND Code = ?`;
-  const getResults = () => {
-    return new Promise((resolve, reject) => {
-      db.all(query, [product_id, product_code], (err, rows) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(rows);
-        }
-      });
-    });
-  };
-
-  const results = await getResults();
-
-  // close database
-  db.close((err) => {
-    if (err) {
-      console.error(err.message);
-    }
-    //console.log('Close the database connection.');
-  });
-
-  return results[0];
-}
+// async function getNewProductDetails(event, product_id, product_code) {
+//   // open database
+//   let db = new sqlite3.Database('./module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
+//     if (err) {
+//       console.error(err.message);
+//     }
+//     //console.log('Connected to the chinook database.');
+//   });
+//   let query = `SELECT * FROM Products WHERE product_id = ? AND Code = ?`;
+//   const getResults = () => {
+//     return new Promise((resolve, reject) => {
+//       db.all(query, [product_id, product_code], (err, rows) => {
+//         if (err) {
+//           reject(err);
+//         } else {
+//           resolve(rows);
+//         }
+//       });
+//     });
+//   };
+//
+//   const results = await getResults();
+//
+//   // close database
+//   db.close((err) => {
+//     if (err) {
+//       console.error(err.message);
+//     }
+//     //console.log('Close the database connection.');
+//   });
+//
+//   return results[0];
+// }
 
 
 const createWindow = () => {
@@ -173,13 +173,20 @@ const createWindow = () => {
     // Get and Send all Products ID to front page
     db_read(win, "product_item_list", `SELECT Code, Price, Category, Color
                                        FROM Products`);
+    // Create the Category filter list
+    db_read(win, "categories-list", `SELECT DISTINCT (Category) FROM Products ORDER BY Category ASC NULLS LAST`);
+
+    // Create the Color filter list
+    db_read(win, "color-list", `SELECT DISTINCT (Color) FROM Products ORDER BY Color ASC NULLS LAST`);
   });
 
 }
 
 
 app.whenReady().then(() => {
-  ipcMain.handle("dialog:getNewProductDetails", getNewProductDetails);
+  // ipcMain.handle("dialog:getNewProductDetails", getNewProductDetails);
+
+  // addProduct function
   ipcMain.on('addProduct', (event, product_code, product_quantity) => {
     // test of print here
     childWindows[0].webContents.printToPDF({landscape: true}).then(data => {
@@ -215,6 +222,7 @@ app.whenReady().then(() => {
       }
     });
   })
+
   createWindow();
 })
 

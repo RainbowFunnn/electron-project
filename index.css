@@ -79,6 +79,7 @@ form.login button[type="submit"] {
 
 #filter-sidebar {
   float: left;
+  max-width: 240px;
 }
 
 .filter-cards {
@@ -116,11 +117,6 @@ form.login button[type="submit"] {
 .product_item:hover {
   background-color: lightgray;
 }
-
-.filter-part {
-  display: none;
-}
-
 
 .part-close-button {
   font-size: 27px;

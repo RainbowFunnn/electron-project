@@ -17,7 +17,14 @@ df = pd.read_excel(filepath, engine="openpyxl")
 df_clean = df.dropna(axis=1, how='all').dropna(how='all')
 df_clean = df_clean.rename(columns={"Book Price (Ex. GST)": "Price", "Qty/Box": "Qty", "Color Finish": "Color", "WELS LIC.": "WELS", "REG. Number": "REG", "STAR Rating": "Rating", "Water Cconsump.": "WaterCon"})
 df_clean = df_clean.round({"Price": 2})
+
+# Data wraggling and Transformation
 df_clean["WELS"].replace('NOT REQUIRE', np.nan, inplace=True)
+df_clean["Category"].replace(np.nan, "OTHER", inplace=True)
+df_clean["Color"].replace("BRUSHED GOLD", "BRUSH GOLD", inplace=True)
+df_clean["Color"].replace("BRUSHED GUN METAL", "BRUSH GUN METAL", inplace=True)
+df_clean["Color"] = df_clean["Color"].str.upper()
+
 # add column called img
 df_clean["img"] = np.nan
 # import data to sqlite
