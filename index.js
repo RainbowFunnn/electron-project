@@ -55,8 +55,14 @@ function product_list_filter(el, type){
 function delete_quote_item(product){
   m4q.global();
   $( "#quote-table" ).data('table').deleteItem(1, product);
-  $( "#quote-table" ).data('table').draw();
-  $( "#quote-table" ).data('table').rebuildIndex()
+
+  // recalculate the total price
+  let total = 0;
+  $( "#quote-table" ).data('table').getItems().forEach(item => {
+    total+= +item[4]
+  })
+  $( "#quote-table" ).data('table').foots[4].title = ("$" + total.toFixed(2));
+  $( "#quote-table" ).data('table')._rebuild()
   m4q.noConflict();
 }
 
