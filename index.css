@@ -135,3 +135,21 @@ form.login button[type="submit"] {
 .quote-part {
   display: None;
 }
+
+.quote-quantity-input {
+  width: 4em;
+  border: 0;
+}
+
+.quote-price-input {
+  border: 0;
+}
+
+.quote-price-input::-webkit-out-spin-button,
+.quote-price-input::-webkit-inner-spin-button {
+  -webkit-appearance: None;
+}
+
+.checkbox {
+  display: -webkit-inline-box;
+}

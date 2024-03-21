@@ -60,6 +60,48 @@ function delete_quote_item(product){
   m4q.noConflict();
 }
 
+//function for update total price in quote table
+function quote_table_update_totalprice(product_code, price, quantity){
+  $( "#quote-table" ).data('table').updateItem(product_code, "TOTAL", (price * quantity).toFixed(2));
+  let total = 0;
+  $( "#quote-table" ).data('table').getItems().forEach(item => {
+    total+= +item[4]
+  })
+  $( "#quote-table" ).data('table').foots[4].title = ("$" + total.toFixed(2));
+}
+
+// function for update quantity in quote table
+function quote_table_update_quantity(el, product_code){
+  m4q.global();
+  let items = $( "#quote-table" ).data('table').getItems();
+  for (i=0;i<items.length;i++){
+    if (items[i][1] == product_code){
+      //update quantity
+      items[i][3].toggleAttr("value", el.value);
+      // update total quantity
+      quote_table_update_totalprice(product_code, items[i][2].attr("value"), items[i][3].attr("value"));
+    }
+  }
+  $( "#quote-table" ).data('table')._rebuild(true);
+  m4q.noConflict();
+}
+
+// function for update price in quote table
+function quote_table_update_price(el, product_code){
+  m4q.global();
+  let items = $( "#quote-table" ).data('table').getItems();
+  for (i=0;i<items.length;i++){
+    if (items[i][1] == product_code){
+      //update price
+      items[i][2].toggleAttr("value", el.value)
+      // update total quantity
+      quote_table_update_totalprice(product_code, items[i][2].attr("value"), items[i][3].attr("value"));
+    }
+  }
+  $( "#quote-table" ).data('table')._rebuild(true);
+  m4q.noConflict();
+}
+
 
 window.electronAPI.product_item_list((rows) => {
   m4q.global();
@@ -100,17 +142,19 @@ window.electronAPI.addQuote((rows, product_quantity) => {
     for (i=0;i<items.length;i++){
       if (items[i][1] == row.Code){
         is_found = true
-        $( "#quote-table" ).data('table').updateItem(row.Code, "PRICE", row.Price);
-        $( "#quote-table" ).data('table').updateItem(row.Code, "QUANTITY", (parseInt(items[i][3])+parseInt(product_quantity)));
-        $( "#quote-table" ).data('table').updateItem(row.Code, "TOTAL", (parseInt(items[i][3])*row.Price));
-        $( "#quote-table" ).data('table').draw();
+        //update quantity
+        items[i][3].toggleAttr("value", (parseInt(items[i][3].attr("value"))+parseInt(product_quantity)))
+        //update total price
+        quote_table_update_totalprice(row.Code, items[i][2].attr("value"), items[i][3].attr("value"))
       }
     }
     if (!is_found){
-      $( "#quote-table" ).data('table').addItem([$( `<button type='button' onclick="delete_quote_item('`+ row.Code +`')">x</button>` ), row.Code, row.Price, product_quantity, row.Price * product_quantity]);
+      let quantity_part = $( `<input type="number" class="quote-quantity-input" step="1" min="1" value="`+ product_quantity +`" onkeypress="return event.charCode >= 48" required onChange="quote_table_update_quantity(this, '`+ row.Code +`')"></input>` )
+      let price_part = $( `<input type="number" class="quote-price-input" value="0" required onChange="quote_table_update_price(this, '`+ row.Code +`')"></input>` )
+      $( "#quote-table" ).data('table').addItem([$( `<button type='button' onclick="delete_quote_item('`+ row.Code +`')">x</button>` ), row.Code, price_part, quantity_part, "0.00"]);
     }
   });
-  $( "#quote-table" ).data('table').rebuildIndex()
+  $( "#quote-table" ).data('table')._rebuild(true);
   m4q.noConflict();
 });
 
