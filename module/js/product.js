@@ -12,7 +12,7 @@ function product_print(){
 window.electronAPI.getProductImg((rows) => {
   let e_img = document.getElementById('product-img');
   if (rows == null){
-    e_img.src = `module/img/no_img.jpeg`
+    e_img.src = `../img/no_img.jpeg`
   } else {
     e_img.src = `data:image/png;base64, ${rows}`;
   }

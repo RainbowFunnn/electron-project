@@ -125,7 +125,7 @@ const createWindow = () => {
   //   console.log(JSON.parse(param)[1]);
   // });
 
-  win.loadFile('index.html')
+  win.loadFile('module/html/index.html')
   // 打开开发工具
   win.webContents.openDevTools()
 
@@ -236,7 +236,7 @@ ipcMain.on('create-item-window', (event, item_id) => {
       preload: path.join(__dirname, 'preload_product.js')
     }
   });
-  itemWindow.loadFile('product.html');
+  itemWindow.loadFile('module/html/product.html');
   itemWindow.setMenu(Menu.buildFromTemplate([]));
 
   // 打开开发工具
@@ -295,28 +295,25 @@ ipcMain.on('print_quote_table', (event, content) => {
     //     console.log(error)
     // });
 
-    // printWindow.destroy();
+    printWindow.destroy();
   });
 })
 
 // product page print
 ipcMain.on('print_product', (event, content) => {
   let printWindow = new BrowserWindow({
-    // show: false,
+    show: false,
     width: 900,
     height: 600,
   });
-
-  // 打开开发工具
-  printWindow.webContents.openDevTools()
 
   printWindow.loadFile('module/html/product_print.html')
   printWindow.webContents.on('did-finish-load', async () => {
     await printWindow.webContents.executeJavaScript("document.body.innerHTML += `" + content + "`;")
     await printWindow.webContents.executeJavaScript(`remove_elements()`)
-    // await printWindow.webContents.print(print_options);
-    //
-    // printWindow.destroy();
+    await printWindow.webContents.print(print_options);
+
+    printWindow.destroy();
   });
 })
 
