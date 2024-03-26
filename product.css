@@ -4,7 +4,19 @@
 }
 
 .product-header h1 {
+  display: inline;
   font-weight: 400;
+}
+
+.product-header span{
+  font-size: 35px;
+  margin-left: 30px;
+  color: green;
+  cursor: pointer;
+}
+
+.product-header span:hover{
+  color: #0e620e;
 }
 
 .product-detail-img {

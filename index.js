@@ -187,6 +187,10 @@ window.electronAPI.get_color_list((rows) => {
   m4q.noConflict();
 });
 
+// quote table print function
+function quote_table_print(){
+  window.electronAPI.print(document.querySelector('.quote-table').outerHTML);
+}
 
 //Quote Part
 ///open the quote page

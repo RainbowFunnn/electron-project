@@ -31,7 +31,7 @@ form.login button[type="submit"] {
 
 /* css main part */
 .main-part {
-  display: block;
+  display: none;
 }
 
 .main-part-header{
@@ -133,7 +133,7 @@ form.login button[type="submit"] {
 }
 
 .quote-part {
-  display: None;
+  display: block;
 }
 
 .quote-quantity-input {
@@ -148,6 +148,28 @@ form.login button[type="submit"] {
 .quote-price-input::-webkit-out-spin-button,
 .quote-price-input::-webkit-inner-spin-button {
   -webkit-appearance: None;
+}
+
+.quote-table-download {
+  display: inline-flex;
+  padding: 10px 26px 10px 25px;
+  font-size: 15px;
+  background-color: green;
+  color: white;
+  cursor: pointer;
+  float: right;
+  margin-top: 15px;
+  margin-right: 5px;
+}
+
+.quote-table-download:hover {
+  background-color: #0e620e;
+}
+
+.quote-table-download .mif-printer{
+  font-size: 25px;
+  width: 30px;
+  color: white;
 }
 
 .checkbox {

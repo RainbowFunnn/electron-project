@@ -5,6 +5,10 @@
 //   },
 // });
 
+function product_print(){
+  window.electronAPI.print(document.querySelector('.print_area').outerHTML)
+}
+
 window.electronAPI.getProductImg((rows) => {
   let e_img = document.getElementById('product-img');
   if (rows == null){
@@ -16,7 +20,7 @@ window.electronAPI.getProductImg((rows) => {
 
 window.electronAPI.getProductDetails((rows) => {
   //set page hearder
-  $( "<h1 id='product-code'>" + rows[0].Code + "</h1>", $( ".product-header" ) );
+  $( "<h1 id='product-code'>" + rows[0].Code + "</h1>" ).prependTo($( ".product-header" ));
 
     // Desc
   $( "<li><strong>Description</strong>: <span id='product-desc'>" + rows[0].Description.toLowerCase() + "</span></li>", $( "#product-detail-list" ) );
@@ -26,6 +30,10 @@ window.electronAPI.getProductDetails((rows) => {
   $( "<li><strong>Color</strong>: <span id='product-color'>" + rows[0].Color.toLowerCase() + "</span></li>", $( "#product-detail-list" ) );
     // Range
   $( "<li><strong>Range</strong>: <span id='product-range'>" + rows[0].Range.toLowerCase() + "</span></li>", $( "#product-detail-list" ) );
+    // WELS
+  if (rows[0].WELS != null){
+    $( "<li><strong>WELS</strong>: <span id='product-wels'>" + rows[0].WELS + "</span></li>", $( "#product-detail-list" ) );
+  }
     // Warranty
   $( "<li><strong>Warranty</strong>: <span id='product-warranty'>" + rows[0].Warranty.toLowerCase() + "</span></li>", $( "#product-detail-list" ) );
     // Barcode

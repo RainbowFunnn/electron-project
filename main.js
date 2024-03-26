@@ -6,9 +6,21 @@ const fs = require('node:fs')
 let win;
 let childWindows = [];
 
+const print_options = {
+    silent: false,
+    printBackground: true,
+    color: false,
+    margin: {
+        marginType: 'printableArea'
+    },
+    landscape: true,
+    pagesPerSheet: 1,
+    collate: false
+}
+
 function db_read(win, name, query) {
   // open database
-  let db = new sqlite3.Database('./module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
+  let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
       console.error(err.message);
     }
@@ -31,7 +43,7 @@ function db_read(win, name, query) {
 
 function db_read_img(win, name, query) {
   // open database
-  let db = new sqlite3.Database('./module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
+  let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
       console.error(err.message);
     }
@@ -95,7 +107,6 @@ function db_read_img(win, name, query) {
 //
 //   return results[0];
 // }
-
 
 const createWindow = () => {
   win = new BrowserWindow({
@@ -188,22 +199,10 @@ app.whenReady().then(() => {
 
   // addProduct function
   ipcMain.on('addProduct', (event, product_code, product_quantity) => {
-    // test of print here
-    // childWindows[0].webContents.printToPDF({landscape: true}).then(data => {
-    //     fs.writeFile("test.pdf", data, function (err) {
-    //         if (err) {
-    //             console.log(err);
-    //         } else {
-    //             console.log('PDF Generated Successfully');
-    //         }
-    //     });
-    // }).catch(error => {
-    //     console.log(error)
-    // });
 
     // extract product information from db
     let query = `SELECT Code, Price FROM Products WHERE Code = "` + product_code + `"`;
-    let db = new sqlite3.Database('./module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
+    let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
       if (err) {
         console.error(err.message);
       }
@@ -265,6 +264,61 @@ ipcMain.on('create-item-window', (event, item_id) => {
   });
 
 });
+
+
+//print function
+// quote table print
+ipcMain.on('print_quote_table', (event, content) => {
+  let printWindow = new BrowserWindow({
+    show: false,
+    width: 1200,
+    height: 800,
+  });
+
+  printWindow.loadFile('module/html/quote_print.html')
+
+  printWindow.webContents.on('did-finish-load', async () => {
+    await printWindow.webContents.executeJavaScript("document.body.innerHTML += `" + content + "`;")
+    await printWindow.webContents.executeJavaScript(`remove_elements()`)
+    await printWindow.webContents.print(print_options)
+
+    // print to pdf test on macOS
+    // await printWindow.webContents.printToPDF({landscape: false}).then(data => {
+    //     fs.writeFile("test.pdf", data, function (err) {
+    //         if (err) {
+    //             console.log(err);
+    //         } else {
+    //             console.log('PDF Generated Successfully');
+    //         }
+    //     });
+    // }).catch(error => {
+    //     console.log(error)
+    // });
+
+    // printWindow.destroy();
+  });
+})
+
+// product page print
+ipcMain.on('print_product', (event, content) => {
+  let printWindow = new BrowserWindow({
+    // show: false,
+    width: 900,
+    height: 600,
+  });
+
+  // 打开开发工具
+  printWindow.webContents.openDevTools()
+
+  printWindow.loadFile('module/html/product_print.html')
+  printWindow.webContents.on('did-finish-load', async () => {
+    await printWindow.webContents.executeJavaScript("document.body.innerHTML += `" + content + "`;")
+    await printWindow.webContents.executeJavaScript(`remove_elements()`)
+    // await printWindow.webContents.print(print_options);
+    //
+    // printWindow.destroy();
+  });
+})
 
 //
 // itemWindow.webContents.printToPDF({}).then(data => {

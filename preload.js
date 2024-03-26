@@ -5,7 +5,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   createItemWindow: (item_id) => ipcRenderer.send('create-item-window', item_id),
   addQuote: (callback) => ipcRenderer.on('addQuote', (_event, rows, product_quantity) => callback(rows, product_quantity)),
   get_categories_list: (callback) => ipcRenderer.on('categories-list', (_event, rows) => callback(rows)),
-  get_color_list: (callback) => ipcRenderer.on('color-list', (_event, rows) => callback(rows))
+  get_color_list: (callback) => ipcRenderer.on('color-list', (_event, rows) => callback(rows)),
+  print: (content) => ipcRenderer.send('print_quote_table', content)
 })
 
 

@@ -1,0 +1,26 @@
+.quote-table {
+  margin-top: 50px;
+  padding: 0px 50px 0px;
+}
+
+.quote-part {
+  display: block;
+}
+
+.quote-quantity-input {
+  width: 4em;
+  border: 0;
+}
+
+.quote-price-input {
+  border: 0;
+}
+
+.quote-price-input::-webkit-out-spin-button,
+.quote-price-input::-webkit-inner-spin-button {
+  -webkit-appearance: None;
+}
+
+button {
+  display: none;
+}
