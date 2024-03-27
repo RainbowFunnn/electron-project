@@ -106,7 +106,7 @@ form.login button[type="submit"] {
 }
 
 .product_item{
-  border: solid;
+  border: 1px solid #dcdcdc;
   padding-top: 20px;
   margin-bottom: 20px;
   cursor: pointer;
@@ -123,6 +123,10 @@ form.login button[type="submit"] {
   display: inline-flex;
   min-height: 270px;
   align-items: center;
+}
+
+.product_item .img-container img{
+  max-height: 300px;
 }
 
 .product-list-figcap-code{

@@ -40,12 +40,35 @@ login_form.addEventListener("submit", async function(event){
 
 // redraw the product list after filtering
 function product_list_filter(el, type){
-  // val = el.attr("data-caption")
   val = el.getAttribute("data-caption");
   if (type == "category"){
     category_filter[val] = !category_filter[val]
   } else if (type == "color"){
     color_filter[val] = !color_filter[val]
+  }
+  m4q.global();
+  $( "#products-list" ).data('list').draw();
+  m4q.noConflict();
+}
+
+//filter 'all' function
+function product_list_filter_all(el, type){
+  checked = el.checked
+  if (type == "category"){
+    for (var key in category_filter){
+      category_filter[key] = checked
+    }
+    document.querySelectorAll("#product-category-filter-list input").forEach(el => {
+      el.checked=checked
+    })
+
+  } else if (type == "color"){
+    for (var key in color_filter){
+      color_filter[key] = checked
+    }
+    document.querySelectorAll("#product-color-filter-list input").forEach(el => {
+      el.checked=checked
+    })
   }
   m4q.global();
   $( "#products-list" ).data('list').draw();
@@ -181,15 +204,17 @@ window.electronAPI.get_categories_list((rows) => {
   });
   $( `<div><input type="checkbox" data-role="checkbox" data-style="2" id="product-filter-category-`+ "OTHER" +`" data-caption="`+ "OTHER" +`" checked onChange="product_list_filter(this, 'category')"></div>` ,$( "#product-category-filter-list" ) );
   category_filter["OTHER"] = true
+  $( `<div><input type="checkbox" data-role="checkbox" data-style="2" id="product-filter-category-`+ "all" +`" data-caption="`+ "ALL" +`" checked onChange="product_list_filter_all(this, 'category')"></div>` ,$( "#product-category-filter-list" ) );
   m4q.noConflict();
 });
-
+// Create the filter color
 window.electronAPI.get_color_list((rows) => {
   m4q.global();
   rows.forEach(row => {
     $( `<div><input type="checkbox" data-role="checkbox" data-style="2" id="product-filter-color-`+ row.Color +`" data-caption="`+ row.Color +`" checked onChange="product_list_filter(this, 'color')"></div>` ,$( "#product-color-filter-list" ) );
     color_filter[row.Color] = true
   });
+  $( `<div><input type="checkbox" data-role="checkbox" data-style="2" id="product-filter-color-all" data-caption="ALL" checked onChange="product_list_filter_all(this, 'color')"></div>` ,$( "#product-color-filter-list" ) );
   m4q.noConflict();
 });
 
