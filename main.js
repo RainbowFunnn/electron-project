@@ -1,10 +1,12 @@
-const { app, BrowserWindow, ipcMain, Menu } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, dialog, Notification } = require('electron')
 const sqlite3 = require('sqlite3').verbose();
 const path = require('node:path');
 const fs = require('node:fs')
 
 let win;
 let childWindows = [];
+var user = null
+var username = null
 
 const print_options = {
     silent: false,
@@ -73,6 +75,8 @@ function db_read_img(win, name, query) {
     //console.log('Close the database connection.');
   });
 }
+
+
 
 // async function getNewProductDetails(event, product_id, product_code) {
 //   // open database
@@ -315,6 +319,50 @@ ipcMain.on('print_product', (event, content) => {
 
     printWindow.destroy();
   });
+})
+
+// check login credential
+ipcMain.handle("check_credential", async (event, username, password) => {
+  //check credential in database
+  let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+  });
+
+  const getResults = () => {
+    return new Promise((resolve, reject) => {
+      db.get(`SELECT * FROM Users WHERE username = ? AND password = ?`, [username, password], (err, row) => {
+        if (err) {
+          reject(err);
+        } else {
+          if (row == null){
+            resolve(false)
+          }
+          else{
+            resolve(row);
+          }
+        }
+      });
+    });
+  };
+
+  let res = await getResults()
+
+  // close database
+  db.close((err) => {
+    if (err) {
+      console.error(err.message);
+    }
+  });
+
+  if (!res){
+    dialog.showMessageBox({message: "Invalid username or password. Please try again.", title: "Login Failed"})
+  } else{
+    user = res.user_group
+    username = res.username
+  }
+  return res
 })
 
 //

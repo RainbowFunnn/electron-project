@@ -10,13 +10,14 @@ var color_filter = {}
 
 //function for login credential checking
 const login_form = document.querySelector("#login_form");
-login_form.addEventListener("submit", function(event){
+login_form.addEventListener("submit", async function(event){
         event.preventDefault();
         let username = $( "#username" ).val();
         let password = $( "#password" ).val();
         //check credential
-        is_login = true
+        let is_login = await window.electronAPI.check_credential(username, password)
         if (is_login){
+          document.querySelector("#main-part-header-username").innerHTML = "User: " + is_login.username
           login_part.style.display = "None";
           main_part.style.display = "block";
         }

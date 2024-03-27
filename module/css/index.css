@@ -1,6 +1,6 @@
 /* css login page */
 .login{
-  display: None;
+  display: block;
 }
 
 .login .title {
@@ -127,13 +127,14 @@ form.login button[type="submit"] {
   color: gray;
 }
 
+/* quote part */
+.quote-part {
+  display: none;
+}
+
 .quote-table {
   margin-top: 50px;
   padding: 0px 50px 0px;
-}
-
-.quote-part {
-  display: block;
 }
 
 .quote-quantity-input {
