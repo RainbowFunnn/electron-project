@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="metro4:jquery" content="false">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; worker-src blob:; img-src data:; font-src data:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; worker-src blob:; img-src data: file:; font-src data:;">
     <title>Project V1</title>
     <link rel="stylesheet" href="../../node_modules/metro4/build/metro.css">
     <link rel="stylesheet" href="../../node_modules/metro4/build/icons.css">
@@ -23,7 +23,7 @@
     <!-- Search Part -->
     <div class="main-part">
       <div class="main-part-header">
-        <span id="main-part-header-username">User: test</span>
+        <span id="main-part-header-username">User: NULL</span>
         <div class="quote-button">
           <span class="mif-cart"></span>
           <span style="font-size: 16px; margin-left:3px;">QUOTE</span>
@@ -55,13 +55,13 @@
 
         <div class="product-list-area">
           <ul data-role="list"
-              data-filter-class="product_item"
+              data-filter-class="product-list-figcap-code"
               data-show-search="true"
               data-show-pagination="true"
-              data-items="15"
+              data-items="9"
               data-show-list-info="true"
               data-search-wrapper=".product-search-wrapper"
-              data-cls-list-item="cell-sm-4 cell-md-4"
+              data-cls-list-item="cell-sm-2 cell-md-4"
               data-cls-list="unstyled-list row flex-justify-center mt-4"
               id="products-list"
           >

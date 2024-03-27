@@ -1,6 +1,6 @@
 /* css login page */
 .login{
-  display: block;
+  display: none;
 }
 
 .login .title {
@@ -31,7 +31,7 @@ form.login button[type="submit"] {
 
 /* css main part */
 .main-part {
-  display: none;
+  display: block;
 }
 
 .main-part-header{
@@ -107,15 +107,27 @@ form.login button[type="submit"] {
 
 .product_item{
   border: solid;
-  padding-left: 15px;
   padding-top: 20px;
-  padding-bottom: 20px;
   margin-bottom: 20px;
   cursor: pointer;
+  margin-right: 10px;
+  flex: 0 0 30%;
+  max-width: 30%;
 }
 
 .product_item:hover {
   background-color: lightgray;
+}
+
+.product_item .img-container{
+  display: inline-flex;
+  min-height: 270px;
+  align-items: center;
+}
+
+.product-list-figcap-code{
+  margin-top: 25px;
+  font-weight: bold
 }
 
 .part-close-button {

@@ -113,7 +113,12 @@ function quote_table_update_price(el, product_code){
 window.electronAPI.product_item_list((rows) => {
   m4q.global();
   rows.forEach((row) => {
-      $( "<li><div class='product_item' id='" + row.Code + "' color='" + row.Color + "' category='" + row.Category +"'>" + row.Code + "</div></li>", $( "#products-list" ) );
+      //$( "<li><div class='product_item' id='" + row.Code + "' color='" + row.Color + "' category='" + row.Category +"'>" + row.Code + "</div></li>", $( "#products-list" ) );
+      if (row.img == null){
+        $( `<li class='product_item' id='` + row.Code + `' color='` + row.Color + `' category='` + row.Category + `'><figure class='text-center'><div class='img-container thumbnail'><img src='../img/no_img.jpeg'></div><figcaption class='product-list-figcap-code'>` + row.Code + `</figcaption></figure></li>`, $( "#products-list" ) );
+      } else{
+        $( `<li class='product_item' id='` + row.Code + `' color='` + row.Color + `' category='` + row.Category + `'><figure class='text-center'><div class='img-container thumbnail'><img src='data:image/png;base64, ${row.img}'></div><figcaption class='product-list-figcap-code'>` + row.Code + `</figcaption></figure></li>`, $( "#products-list" ) );
+      }
   });
 
   let items = document.querySelectorAll('.product_item');
@@ -128,8 +133,8 @@ window.electronAPI.product_item_list((rows) => {
 
   // add product filters
   $( "#products-list" ).data('list').addFilter((item) => {
-    item_color = item.getElementsByClassName("product_item")[0].getAttribute("color")
-    item_category = item.getElementsByClassName("product_item")[0].getAttribute("category")
+    item_color = item.getAttribute("color")
+    item_category = item.getAttribute("category")
     if (category_filter[item_category] && color_filter[item_color]){
       return true
     } else{

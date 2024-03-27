@@ -76,6 +76,37 @@ function db_read_img(win, name, query) {
   });
 }
 
+function db_read_product_img(win, name, query) {
+  // open database
+  let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+  });
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      throw err;
+    }
+
+    rows.forEach((row,index,rows) => {
+      if (row.img != null) {
+        let imageBuffer = Buffer.from(row.img, 'binary');
+        let base64Image = imageBuffer.toString('base64');
+        rows[index].img = base64Image
+      }
+    });
+    win.webContents.send(name, rows)
+  });
+
+  // close database
+  db.close((err) => {
+    if (err) {
+      console.error(err.message);
+    }
+  });
+}
+
 
 
 // async function getNewProductDetails(event, product_id, product_code) {
@@ -186,7 +217,7 @@ const createWindow = () => {
   // When the main window is ready
   win.webContents.on('did-finish-load', () => {
     // Get and Send all Products ID to front page
-    db_read(win, "product_item_list", `SELECT Code, Price, Category, Color
+    db_read_product_img(win, "product_item_list", `SELECT Code, Price, Category, Color, img
                                        FROM Products`);
     // Create the Category filter list
     db_read(win, "categories-list", `SELECT DISTINCT (Category) FROM Products ORDER BY Category ASC NULLS LAST`);
