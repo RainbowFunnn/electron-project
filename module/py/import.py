@@ -9,8 +9,18 @@ import numpy as np
 
 filepath = "sample.xlsx"
 dbpath = "database.db"
+
 con = sqlite3.connect(dbpath)
+# enable the foreign key constrain
+con.execute("PRAGMA foreign_keys = ON;")
 cur = con.cursor()
+
+cur.execute("DROP TABLE IF EXISTS Quotes")
+cur.execute("DROP TABLE IF EXISTS Products;")
+cur.execute("DROP TABLE IF EXISTS Users;")
+
+# Users table
+cur.execute("CREATE TABLE Users (username TEXT PRIMARY KEY, password TEXT, user_group TEXT);")
 
 # import product data
 df = pd.read_excel(filepath, engine="openpyxl")
@@ -58,6 +68,17 @@ for label, img_blob in zip(img_locs_ft, imgs_blob):
 
 # import product image to sqlite
 cur.executemany("UPDATE Products SET img = ? WHERE Code = ?", img_labels)
+
+# User Quote Recording
+cur.execute("""CREATE TABLE Quotes (username TEXT,
+                                    product TEXT,
+                                    price REAL,
+                                    quantity INTEGER,
+                                    quote_group INTEGER,
+                                    FOREIGN KEY (username) REFERENCES Users (username),
+                                    FOREIGN KEY (product) REFERENCES Products (Code)
+                                    );""")
+
 con.commit()
 con.close()
 

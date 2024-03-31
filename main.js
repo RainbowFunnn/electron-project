@@ -20,7 +20,7 @@ const print_options = {
     collate: false
 }
 
-function db_read(win, name, query) {
+function db_read(win, name, query, params) {
   // open database
   let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
@@ -28,7 +28,7 @@ function db_read(win, name, query) {
     }
   });
 
-  db.all(query, [], (err, rows) => {
+  db.all(query, params, (err, rows) => {
     if (err) {
       throw err;
     }
@@ -43,7 +43,7 @@ function db_read(win, name, query) {
   });
 }
 
-function db_read_img(win, name, query) {
+function db_read_img(win, name, query, params) {
   // open database
   let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
@@ -52,7 +52,7 @@ function db_read_img(win, name, query) {
     //console.log('Connected to the chinook database.');
   });
 
-  db.all(query, [], (err, rows) => {
+  db.all(query, params, (err, rows) => {
     if (err) {
       throw err;
     };
@@ -76,7 +76,7 @@ function db_read_img(win, name, query) {
   });
 }
 
-function db_read_product_img(win, name, query) {
+function db_read_product_img(win, name, query, params) {
   // open database
   let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
@@ -84,7 +84,7 @@ function db_read_product_img(win, name, query) {
     }
   });
 
-  db.all(query, [], (err, rows) => {
+  db.all(query, params, (err, rows) => {
     if (err) {
       throw err;
     }
@@ -97,6 +97,43 @@ function db_read_product_img(win, name, query) {
       }
     });
     win.webContents.send(name, rows)
+  });
+
+  // close database
+  db.close((err) => {
+    if (err) {
+      console.error(err.message);
+    }
+  });
+}
+
+const quote_save = (items, group) => {
+  let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    //console.log('Connected to the chinook database.');
+  });
+
+  // Begin a transaction
+  db.serialize(() => {
+      db.run('BEGIN TRANSACTION');
+
+      db.run('DELETE FROM Quotes WHERE username = ?')
+
+      // Prepare the insert statement
+      let stmt = db.prepare('INSERT INTO users (name, age) VALUES (?, ?)');
+
+      // Insert each row using parameterized query
+      dataToInsert.forEach(row => {
+          stmt.run(row.name, row.age);
+      });
+
+      // Finalize the statement
+      stmt.finalize();
+
+      // Commit the transaction
+      db.run('COMMIT');
   });
 
   // close database
@@ -189,6 +226,9 @@ const createWindow = () => {
       },
     },
     {
+      label: "save",
+    },
+    {
       label: "Quit",
       role: "quit"
     }
@@ -220,10 +260,10 @@ const createWindow = () => {
     db_read_product_img(win, "product_item_list", `SELECT Code, Price, Category, Color, img
                                        FROM Products`);
     // Create the Category filter list
-    db_read(win, "categories-list", `SELECT DISTINCT (Category) FROM Products ORDER BY Category ASC NULLS LAST`);
+    db_read(win, "categories-list", `SELECT DISTINCT (Category) FROM Products ORDER BY Category ASC NULLS LAST`, []);
 
     // Create the Color filter list
-    db_read(win, "color-list", `SELECT DISTINCT (Color) FROM Products ORDER BY Color ASC NULLS LAST`);
+    db_read(win, "color-list", `SELECT DISTINCT (Color) FROM Products ORDER BY Color ASC NULLS LAST`, []);
   });
 
 }
@@ -293,9 +333,9 @@ ipcMain.on('create-item-window', (event, item_id) => {
   itemWindow.webContents.on('did-finish-load', () => {
     // init the page content
       // Get img
-    db_read_img(itemWindow, "productImg", "SELECT img FROM Products WHERE Code = '"+ item_id +"';")
+    db_read_img(itemWindow, "productImg", "SELECT img FROM Products WHERE Code = ?;", [item_id])
       //get all details
-    db_read(itemWindow, "productDetail", "SELECT * FROM Products WHERE Code = '" + item_id + "'")
+    db_read(itemWindow, "productDetail", `SELECT * FROM Products WHERE Code = ?`, [item_id])
   });
 
 });
