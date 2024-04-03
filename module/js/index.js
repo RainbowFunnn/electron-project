@@ -23,6 +23,19 @@ login_form.addEventListener("submit", async function(event){
         }
 });
 
+// function to save quotes
+function quote_table_save(){
+  m4q.global();
+  let items = $( "#quote-table" ).data("table").getItems()
+  let items_reshape = []
+  items.forEach((item, i) => {
+    items_reshape[i] = [item[1], item[2][0].value, item[3][0].value]
+  });
+  let quote_group = $( "#quote-table-selector" )[0].value
+  let res = window.electronAPI.quote_table_save(items_reshape, quote_group)
+  m4q.noConflict();
+}
+
 // function to create price filter
 // function price_filter_init(max_price, current_min, current_max) {
 //   $( "#price-filter-slider" ).slider({
@@ -167,6 +180,32 @@ window.electronAPI.product_item_list((rows) => {
 
   m4q.noConflict(); // $ - now is a jquery constructor
 });
+
+//update quote table with data from db (specific serve for quotes' data from database)
+function get_quote_update(rows){
+  m4q.global();
+  $( "#quote-table" ).data('table').clear()
+  rows.forEach(row => {
+    let quantity_part = $( `<input type="number" class="quote-quantity-input" step="1" min="1" value="`+ row.quantity +`" onkeypress="return event.charCode >= 48" required onChange="quote_table_update_quantity(this, '`+ row.product +`')"></input>` )
+    let price_part = $( `<input type="number" class="quote-price-input" value="`+ row.price +`" required onChange="quote_table_update_price(this, '`+ row.product +`')"></input>` )
+    $( "#quote-table" ).data('table').addItem([$( `<button type='button' onclick="delete_quote_item('`+ row.product +`')">x</button>` ), row.product, price_part, quantity_part, row.price*row.quantity]);
+  })
+  $( "#quote-table" ).data('table')._rebuild(true);
+
+  let total = 0;
+  $( "#quote-table" ).data('table').getItems().forEach(item => {
+    total+= +item[4]
+  })
+  $( "#quote-table" ).data('table').foots[4].title = ("$" + total.toFixed(2));
+  $( "#quote-table" ).data('table')._rebuild(true);
+  m4q.noConflict();
+}
+
+// get the specific quote based on the quote table choosed
+async function get_specific_quotes(quote_group){
+  let rows = await window.electronAPI.getRequestQuote(quote_group)
+  get_quote_update(rows)
+}
 
 // add product to quote
 window.electronAPI.addQuote((rows, product_quantity) => {

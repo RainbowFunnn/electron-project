@@ -5,8 +5,8 @@ const fs = require('node:fs')
 
 let win;
 let childWindows = [];
-var user = null
-var username = null
+var user_group = null
+var username = "a"
 
 const print_options = {
     silent: false,
@@ -19,6 +19,8 @@ const print_options = {
     pagesPerSheet: 1,
     collate: false
 }
+
+// database functions
 
 function db_read(win, name, query, params) {
   // open database
@@ -49,7 +51,6 @@ function db_read_img(win, name, query, params) {
     if (err) {
       console.error(err.message);
     }
-    //console.log('Connected to the chinook database.');
   });
 
   db.all(query, params, (err, rows) => {
@@ -72,7 +73,6 @@ function db_read_img(win, name, query, params) {
     if (err) {
       console.error(err.message);
     }
-    //console.log('Close the database connection.');
   });
 }
 
@@ -106,79 +106,6 @@ function db_read_product_img(win, name, query, params) {
     }
   });
 }
-
-const quote_save = (items, group) => {
-  let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-      console.error(err.message);
-    }
-    //console.log('Connected to the chinook database.');
-  });
-
-  // Begin a transaction
-  db.serialize(() => {
-      db.run('BEGIN TRANSACTION');
-
-      db.run('DELETE FROM Quotes WHERE username = ?')
-
-      // Prepare the insert statement
-      let stmt = db.prepare('INSERT INTO users (name, age) VALUES (?, ?)');
-
-      // Insert each row using parameterized query
-      dataToInsert.forEach(row => {
-          stmt.run(row.name, row.age);
-      });
-
-      // Finalize the statement
-      stmt.finalize();
-
-      // Commit the transaction
-      db.run('COMMIT');
-  });
-
-  // close database
-  db.close((err) => {
-    if (err) {
-      console.error(err.message);
-    }
-  });
-}
-
-
-
-// async function getNewProductDetails(event, product_id, product_code) {
-//   // open database
-//   let db = new sqlite3.Database('./module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
-//     if (err) {
-//       console.error(err.message);
-//     }
-//     //console.log('Connected to the chinook database.');
-//   });
-//   let query = `SELECT * FROM Products WHERE product_id = ? AND Code = ?`;
-//   const getResults = () => {
-//     return new Promise((resolve, reject) => {
-//       db.all(query, [product_id, product_code], (err, rows) => {
-//         if (err) {
-//           reject(err);
-//         } else {
-//           resolve(rows);
-//         }
-//       });
-//     });
-//   };
-//
-//   const results = await getResults();
-//
-//   // close database
-//   db.close((err) => {
-//     if (err) {
-//       console.error(err.message);
-//     }
-//     //console.log('Close the database connection.');
-//   });
-//
-//   return results[0];
-// }
 
 const createWindow = () => {
   win = new BrowserWindow({
@@ -394,7 +321,6 @@ ipcMain.on('print_product', (event, content) => {
 
 // check login credential
 ipcMain.handle("check_credential", async (event, username, password) => {
-  //check credential in database
   let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
       console.error(err.message);
@@ -430,11 +356,89 @@ ipcMain.handle("check_credential", async (event, username, password) => {
   if (!res){
     dialog.showMessageBox({message: "Invalid username or password. Please try again.", title: "Login Failed"})
   } else{
-    user = res.user_group
+    user_group = res.user_group
     username = res.username
   }
   return res
 })
+
+//quote_table save
+ipcMain.handle("quote_table_save", async (event, items, quote_group) => {
+    let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
+      if (err) {
+        console.error(err.message);
+      }
+      //console.log('Connected to the chinook database.');
+    });
+    db.run("PRAGMA foreign_keys = ON;")
+
+    // Begin a transaction
+    db.serialize(() => {
+        db.run('BEGIN TRANSACTION');
+
+        db.run('DELETE FROM Quotes WHERE username = ? AND quote_group = ?', [username, quote_group])
+
+        // Prepare the insert statement
+        let stmt = db.prepare('INSERT INTO Quotes VALUES (?, ?, ?, ?, ?)');
+
+        // Insert each row using parameterized query
+        items.forEach(row => {
+            stmt.run(username, row[0], row[1], row[2], quote_group);
+        });
+
+        // Finalize the statement
+        stmt.finalize();
+
+        // Commit the transaction
+        db.run('COMMIT');
+    });
+
+    // close database
+    db.close((err) => {
+      if (err) {
+        console.error(err.message);
+      }
+    });
+
+    return true
+})
+
+// get specific quote table
+ipcMain.handle("getRequestQuote", async (event, quote_group) =>{
+  if (quote_group > 5 || quote_group < 0){
+    dialog.showMessageBox({message: "Only 5 Quotes allowed", title: "Error"})
+    return null
+  }
+  let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+  });
+
+  const getResults = () => {
+    return new Promise((resolve, reject) => {
+      db.all(`SELECT * FROM Quotes WHERE username = ? AND quote_group = ?`, [username, quote_group], (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows)
+        }
+      });
+    });
+  };
+
+  let res = await getResults()
+
+  // close database
+  db.close((err) => {
+    if (err) {
+      console.error(err.message);
+    }
+  });
+
+  return res
+})
+
 
 //
 // itemWindow.webContents.printToPDF({}).then(data => {

@@ -7,7 +7,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   get_categories_list: (callback) => ipcRenderer.on('categories-list', (_event, rows) => callback(rows)),
   get_color_list: (callback) => ipcRenderer.on('color-list', (_event, rows) => callback(rows)),
   print: (content) => ipcRenderer.send('print_quote_table', content),
-  check_credential: (username, password) => ipcRenderer.invoke('check_credential', username, password)
+  check_credential: (username, password) => ipcRenderer.invoke('check_credential', username, password),
+  quote_table_save: (items, quote_group) => ipcRenderer.invoke('quote_table_save', items, quote_group),
+  getRequestQuote: (quote_group) => ipcRenderer.invoke('getRequestQuote', quote_group),
 })
 
 

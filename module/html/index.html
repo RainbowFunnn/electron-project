@@ -72,8 +72,19 @@
 
     <!-- Quote Part -->
     <div class="quote-part">
-      <span>QUOTE LIST</span>
-      <span class="mif-cancel part-close-button quote-close-button"></span>
+      <!-- <span>QUOTE LIST</span> -->
+      <div class = "quote-close-button-part">
+        <span class="mif-cancel part-close-button quote-close-button"></span>
+      </div>
+      <div class="quote-table-selector-part">
+        <select data-role="select" id="quote-table-selector" data-filter="false" onchange="get_specific_quotes(this.value)">
+          <option value="1">Quote 1</option>
+          <option value="2">Quote 2</option>
+          <option value="3">Quote 3</option>
+          <option value="4">Quote 4</option>
+          <option value="5">Quote 5</option>
+        </select>
+      </div>
       <div class="quote-table">
         <table class="table table-border row-border cell-border compact" id="quote-table"
                data-role="table"
@@ -105,10 +116,19 @@
           </tfoot>
         </table>
 
-        <div class="quote-table-download" onclick="quote_table_print()">
-          <span class="mif-printer"></span>
-          <span class="label"> Print & Save</span>
+        <div class = "flow-root">
+          <div class="quote-table-save" onclick="quote_table_save()">
+            <span class="mif-cloud-download"></span>
+            <span class="label"> Save</span>
+          </div>
         </div>
+
+        <div class = "flow-root">
+          <div class="quote-table-download" onclick="quote_table_print()">
+            <span class="mif-printer"></span>
+            <span class="label"> Print & Save</span>
+          </div>
+      </div>
       </div>
     </div>
 

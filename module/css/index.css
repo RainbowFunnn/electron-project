@@ -148,8 +148,12 @@ form.login button[type="submit"] {
   display: none;
 }
 
+.quote-close-button-part{
+  display: flow-root;
+}
+
 .quote-table {
-  margin-top: 50px;
+  margin-top: 5px;
   padding: 0px 50px 0px;
 }
 
@@ -167,9 +171,10 @@ form.login button[type="submit"] {
   -webkit-appearance: None;
 }
 
-.quote-table-download {
+.quote-table-download,
+.quote-table-save {
   display: inline-flex;
-  padding: 10px 26px 10px 25px;
+  padding: 10px 20px 10px 20px;
   font-size: 15px;
   background-color: green;
   color: white;
@@ -179,16 +184,34 @@ form.login button[type="submit"] {
   margin-right: 5px;
 }
 
-.quote-table-download:hover {
+.quote-table-download:hover,
+.quote-table-save:hover {
   background-color: #0e620e;
 }
 
-.quote-table-download .mif-printer{
+.quote-table-download .mif-printer,
+.quote-table-save .mif-cloud-download {
   font-size: 25px;
   width: 30px;
   color: white;
 }
 
+/* quote table selector part */
+.quote-table-selector-part {
+  display: flow-root;
+  margin-top: 30px;
+}
+
+.quote-table-selector-part label{
+  width: 150px;
+  float: right;
+  margin-right: 80px;
+}
+
 .checkbox {
   display: -webkit-inline-box;
+}
+
+.flow-root {
+  display: flow-root;
 }

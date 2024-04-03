@@ -22,6 +22,26 @@ cur.execute("DROP TABLE IF EXISTS Users;")
 # Users table
 cur.execute("CREATE TABLE Users (username TEXT PRIMARY KEY, password TEXT, user_group TEXT);")
 
+# Products table
+cur.execute("""CREATE TABLE "Products" (
+                        	"Code"	TEXT PRIMARY KEY,
+                        	"Barcode"	TEXT,
+                        	"Category"	TEXT,
+                        	"Description"	TEXT,
+                        	"Color"	TEXT,
+                        	"Range"	TEXT,
+                        	"Price"	REAL,
+                        	"Qty"	REAL,
+                        	"WELS"	TEXT,
+                        	"REG"	TEXT,
+                        	"Rating"	REAL,
+                        	"WaterCon"	REAL,
+                        	"Warranty"	TEXT,
+                        	"img"	REAL
+                            );"""
+            )
+con.commit()
+
 # import product data
 df = pd.read_excel(filepath, engine="openpyxl")
 df_clean = df.dropna(axis=1, how='all').dropna(how='all')
@@ -38,7 +58,7 @@ df_clean["Color"] = df_clean["Color"].str.upper()
 # add column called img
 df_clean["img"] = np.nan
 # import data to sqlite
-df_clean.to_sql("Products", con, index=False)
+df_clean.to_sql("Products", con, if_exists='append', index=False)
 con.commit()
 
 # import product image
@@ -74,7 +94,7 @@ cur.execute("""CREATE TABLE Quotes (username TEXT,
                                     product TEXT,
                                     price REAL,
                                     quantity INTEGER,
-                                    quote_group INTEGER,
+                                    quote_group INTEGER CHECK (typeof(quote_group)='integer' AND quote_group > 0 AND quote_group <= 5),
                                     FOREIGN KEY (username) REFERENCES Users (username),
                                     FOREIGN KEY (product) REFERENCES Products (Code)
                                     );""")
