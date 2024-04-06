@@ -7,6 +7,9 @@ const quote_close_btn = document.getElementsByClassName("quote-close-button")[0]
 
 var category_filter = {}
 var color_filter = {}
+var changed_in_current_table = false
+var current_quote_table = "1"
+var intended_quote_table = "1"
 
 //function for login credential checking
 const login_form = document.querySelector("#login_form");
@@ -20,6 +23,7 @@ login_form.addEventListener("submit", async function(event){
           document.querySelector("#main-part-header-username").innerHTML = "User: " + is_login.username
           login_part.style.display = "None";
           main_part.style.display = "block";
+          get_specific_quotes(1)
         }
 });
 
@@ -32,7 +36,17 @@ function quote_table_save(){
     items_reshape[i] = [item[1], item[2][0].value, item[3][0].value]
   });
   let quote_group = $( "#quote-table-selector" )[0].value
-  let res = window.electronAPI.quote_table_save(items_reshape, quote_group)
+  let res = window.electronAPI.quote_table_save(items_reshape, Number(quote_group))
+  res.then(res => {
+    m4q.global();
+    if (res.res){
+      changed_in_current_table = false
+      $( `<xz-notify type="success" expire="1300" position="nw" closeable="true" heading="Quote Save Successfully"> Quote ${quote_group} Saved </xz-notify>` , $( "body" ))
+    } else {
+      $( `<xz-notify type="error" expire="1300" position="nw" closeable="true" heading="Failed to save the Quote"> Failed: ${res.error} </xz-notify>` , $( "body" ))
+    }
+    m4q.noConflict();
+  })
   m4q.noConflict();
 }
 
@@ -90,6 +104,7 @@ function product_list_filter_all(el, type){
 
 //function to delete item in quote
 function delete_quote_item(product){
+  changed_in_current_table = true
   m4q.global();
   $( "#quote-table" ).data('table').deleteItem(1, product);
 
@@ -105,6 +120,7 @@ function delete_quote_item(product){
 
 //function for update total price in quote table
 function quote_table_update_totalprice(product_code, price, quantity){
+  changed_in_current_table = true
   $( "#quote-table" ).data('table').updateItem(product_code, "TOTAL", (price * quantity).toFixed(2));
   let total = 0;
   $( "#quote-table" ).data('table').getItems().forEach(item => {
@@ -115,6 +131,7 @@ function quote_table_update_totalprice(product_code, price, quantity){
 
 // function for update quantity in quote table
 function quote_table_update_quantity(el, product_code){
+  changed_in_current_table = true
   m4q.global();
   let items = $( "#quote-table" ).data('table').getItems();
   for (i=0;i<items.length;i++){
@@ -131,6 +148,7 @@ function quote_table_update_quantity(el, product_code){
 
 // function for update price in quote table
 function quote_table_update_price(el, product_code){
+  changed_in_current_table = true
   m4q.global();
   let items = $( "#quote-table" ).data('table').getItems();
   for (i=0;i<items.length;i++){
@@ -203,12 +221,45 @@ function get_quote_update(rows){
 
 // get the specific quote based on the quote table choosed
 async function get_specific_quotes(quote_group){
-  let rows = await window.electronAPI.getRequestQuote(quote_group)
-  get_quote_update(rows)
+  let rows = await window.electronAPI.getRequestQuote(Number(quote_group))
+  if (rows){
+    get_quote_update(rows)
+  } else {
+    m4q.global();
+    $( `<xz-notify type="error" expire="1300" position="nw" closeable="true" heading="Invalid Quote Group"> Only 5 quote tables allowed </xz-notify>` , $( "body" ))
+    m4q.noConflict();
+  }
+}
+
+//quote table don't save when changing the selected quote
+function quote_table_unsave(){
+  m4q.global();
+  changed_in_current_table = false
+  $( "#quote-table-selector" ).data("select").val(intended_quote_table)
+  m4q.noConflict();
+}
+
+// check whether current table changed and saved with dialogs if changed and not saved, when changing the quote table
+function quote_table_change(quote_group){
+  m4q.global();
+  if (changed_in_current_table && quote_group != current_quote_table) {
+    intended_quote_table = quote_group
+    $( "#quote-table-selector" ).data("select").val(current_quote_table)
+    Metro.dialog.open('#quote_table_save_dialog')
+  } else if (changed_in_current_table && quote_group == current_quote_table){
+    return
+  } else{
+    $( "#quote_table_save_dialog .dialog-title" ).innerText(`Do you want to save the changes made to the quote table ${quote_group}?`)
+    intended_quote_table = quote_group
+    current_quote_table = quote_group
+    get_specific_quotes(quote_group)
+  }
+  m4q.noConflict();
 }
 
 // add product to quote
 window.electronAPI.addQuote((rows, product_quantity) => {
+  changed_in_current_table = true
   m4q.global();
   let items = $( "#quote-table" ).data('table').getItems();
   rows.forEach(row => {

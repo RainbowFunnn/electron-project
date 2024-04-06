@@ -6,7 +6,7 @@ const fs = require('node:fs')
 let win;
 let childWindows = [];
 var user_group = null
-var username = "a"
+var username = null
 
 const print_options = {
     silent: false,
@@ -129,6 +129,10 @@ const createWindow = () => {
   win.webContents.openDevTools()
 
   win.on('closed', () => {
+    // check if the current quote table saved
+    
+
+
     // cause error in macOS
     // win = null;
 
@@ -356,58 +360,59 @@ ipcMain.handle("check_credential", async (event, username, password) => {
   if (!res){
     dialog.showMessageBox({message: "Invalid username or password. Please try again.", title: "Login Failed"})
   } else{
-    user_group = res.user_group
-    username = res.username
+    this.user_group = res.user_group
+    this.username = res.username
   }
   return res
 })
 
 //quote_table save
 ipcMain.handle("quote_table_save", async (event, items, quote_group) => {
-    let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
-      if (err) {
-        console.error(err.message);
-      }
-      //console.log('Connected to the chinook database.');
-    });
-    db.run("PRAGMA foreign_keys = ON;")
+    try {
+        if (quote_group > 5 || quote_group < 0 || !Number.isInteger(quote_group)){
+          return {res: false, error: "Only 5 quote allowed"}
+        }
+        let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE);
+        db.run("PRAGMA foreign_keys = ON;");
 
-    // Begin a transaction
-    db.serialize(() => {
-        db.run('BEGIN TRANSACTION');
+        await new Promise((resolve, reject) => {
+            db.serialize(() => {
+                db.run('BEGIN TRANSACTION');
 
-        db.run('DELETE FROM Quotes WHERE username = ? AND quote_group = ?', [username, quote_group])
+                db.run('DELETE FROM Quotes WHERE username = ? AND quote_group = ?', [this.username, quote_group]);
 
-        // Prepare the insert statement
-        let stmt = db.prepare('INSERT INTO Quotes VALUES (?, ?, ?, ?, ?)');
+                let stmt = db.prepare('INSERT INTO Quotes VALUES (?, ?, ?, ?, ?)');
 
-        // Insert each row using parameterized query
-        items.forEach(row => {
-            stmt.run(username, row[0], row[1], row[2], quote_group);
+                items.forEach((row) => {
+                    stmt.run(this.username, row[0], row[1], row[2], quote_group, function(err) {
+                        if (err) {
+                            reject(err);
+                        }
+                    });
+                });
+
+                stmt.finalize(() => {
+                    resolve();
+                });
+
+                db.run('COMMIT');
+            });
         });
 
-        // Finalize the statement
-        stmt.finalize();
+        db.close();
 
-        // Commit the transaction
-        db.run('COMMIT');
-    });
-
-    // close database
-    db.close((err) => {
-      if (err) {
-        console.error(err.message);
-      }
-    });
-
-    return true
-})
+        // Success
+        return {res: true};
+    } catch (error) {
+        // Failed
+        return {res: false, error: error.code};
+    }
+});
 
 // get specific quote table
 ipcMain.handle("getRequestQuote", async (event, quote_group) =>{
-  if (quote_group > 5 || quote_group < 0){
-    dialog.showMessageBox({message: "Only 5 Quotes allowed", title: "Error"})
-    return null
+  if (quote_group > 5 || quote_group < 0 || !Number.isInteger(quote_group)){
+    return false
   }
   let db = new sqlite3.Database(__dirname + '/module/py/database.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
@@ -417,7 +422,7 @@ ipcMain.handle("getRequestQuote", async (event, quote_group) =>{
 
   const getResults = () => {
     return new Promise((resolve, reject) => {
-      db.all(`SELECT * FROM Quotes WHERE username = ? AND quote_group = ?`, [username, quote_group], (err, rows) => {
+      db.all(`SELECT * FROM Quotes WHERE username = ? AND quote_group = ?`, [this.username, quote_group], (err, rows) => {
         if (err) {
           reject(err);
         } else {

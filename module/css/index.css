@@ -1,6 +1,6 @@
 /* css login page */
 .login{
-  display: none;
+  display: block;
 }
 
 .login .title {
@@ -31,7 +31,7 @@ form.login button[type="submit"] {
 
 /* css main part */
 .main-part {
-  display: block;
+  display: none;
 }
 
 .main-part-header{
@@ -208,6 +208,41 @@ form.login button[type="submit"] {
   margin-right: 80px;
 }
 
+/* dialog */
+.dialog{
+  width: 300px !important;
+  border-radius: 10px;
+  background-color: #e2dcdc;
+}
+
+.dialog-title{
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: none;
+  text-align: center;
+  padding-bottom: 0;
+}
+
+.dialog-content {
+  border: none;
+  text-align: center;
+  font-size: small;
+  padding-top: 0;
+}
+
+.dialog-actions {
+  border: none;
+  display: grid;
+  align-content: center;
+}
+
+.dialog-actions button {
+  margin-bottom: 10px;
+  display: block;
+  border-radius: 8px;
+}
+
+/* others */
 .checkbox {
   display: -webkit-inline-box;
 }
